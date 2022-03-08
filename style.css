@@ -1,0 +1,6 @@
+.test{
+    width: 0;
+    height: 0;
+    border-width: 10px;
+    border-color: blue red green black;
+}
