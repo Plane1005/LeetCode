@@ -36,17 +36,37 @@ function debounce2(fn, delay) {
 //连续发生的事件在delay秒内只执行一次函数
 function throttle(fn, delay) {
 	let timer = null
-	return function () {
-		if (!timer) {
+  return function () {
+    if (!timer) {
 			timer = setTimeout(() => {
 				timer = null
 				fn()
 			}, delay)
-		}
+    }
 	}
 }
 
+//节流
+//函数触发后立即执行，过delay秒后可再执行
+//如果delay时再次触发，无动作
+//连续发生的事件在delay秒内只执行一次函数
+function throttle2(fn, delay) {
+	let timer = null
+  return function () {
+    if (!timer) {
+      fn()
+			timer = setTimeout(() => {
+				timer = null
+			}, delay)
+    }
+	}
+}
+
+const log = () => {
+  console.log('被点击')
+}
+
 let btn = document.getElementById('test')
-btn.onclick = throttle(() => {
-	console.log('被点击')
+btn.onclick = throttle2(() => {
+  log()
 }, 1000)
