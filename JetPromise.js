@@ -11,7 +11,7 @@ function resolvePromise(promise2, x, reslove, reject) {
 		)
 	}
 	let called = false
-	if (x instanceof Object) {
+	if (x != null && (typeof x === 'object' || typeof x === 'function')) {
 		try {
 			let then = x.then
 			if (typeof then === 'function') {
@@ -57,19 +57,23 @@ class JetPromise {
 	}
 
 	resolve = (value) => {
-		if (this.status === PENDING) {
-			this.status = FULFILLED
-			this.value = value
-			this.fulfilledCbs.forEach((fn) => fn())
-		}
+		queueMicrotask(() => {
+			if (this.status === PENDING) {
+				this.status = FULFILLED
+				this.value = value
+				this.fulfilledCbs.forEach((fn) => fn())
+			}
+		})
 	}
 
 	reject = (reason) => {
-		if (this.status === PENDING) {
-			this.status = REJECTED
-			this.reason = reason
-			this.rejectedCbs.forEach((fn) => fn())
-		}
+		queueMicrotask(() => {
+			if (this.status === PENDING) {
+				this.status = REJECTED
+				this.reason = reason
+				this.rejectedCbs.forEach((fn) => fn())
+			}
+		})
 	}
 
 	static resolve = (param) => {
@@ -93,9 +97,8 @@ class JetPromise {
 		onRejected =
 			typeof onRejected === 'function'
 				? onRejected
-				: (reason) => {
-						if (reason instanceof Error) return reason
-						throw new Error(reason)
+				: (err) => {
+						throw err
 				  }
 		let promise2 = new JetPromise((resolve, reject) => {
 			if (this.status === FULFILLED) {
@@ -143,6 +146,7 @@ class JetPromise {
 	catch(errorCb) {
 		return this.then(null, errorCb)
 	}
+
 	finally(fn) {
 		return this.then(fn, fn)
 	}
@@ -260,6 +264,15 @@ class JetPromise {
 			}
 		})
 	}
+}
+
+JetPromise.defer = JetPromise.deferred = function () {
+	let dfd = {}
+	dfd.promise = new JetPromise((resolve, reject) => {
+		dfd.resolve = resolve
+		dfd.reject = reject
+	})
+	return dfd
 }
 
 module.exports = JetPromise

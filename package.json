@@ -4,7 +4,8 @@
   "description": "",
   "main": "102. 二叉树的层序遍历.js",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "test": "promises-aplus-tests JetPromise.js"
   },
   "repository": {
     "type": "git",
