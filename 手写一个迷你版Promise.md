@@ -1,6 +1,10 @@
 ## 手写一个迷你版的Promise
 - **JavaScript** 中的 **Promise** 诞生于 **ES2015（ES6）**，是当下前端开发中特别流行的一种异步操作解决方案，简单实现一个迷你版本帮助深入理解 **Promise** 的运行原理
 ---
+芝士点
+- 微任务
+- static
+- 发布-订阅模式
 ### Promise 的声明
 
 ``` javaScript
@@ -49,7 +53,7 @@ class JetPromise {
 - 成功时，不可转为其他状态，且必须有一个不可改变的值（**value**）
 - 失败时，不可转为其他状态，且必须有一个不可改变的原因（**reason**）
 - **fulfilledCbs**、**rejectedCbs** 意义在于可以支持一个 **promise** 实例状态改变后， **then** 函数中可以有若干个该状态的回调函数，依次执行
-- 如果用户给构造函数传的是一个同步函数，里面的 **resolve** 和 **reject** 会立即执行，比**then** 还执行的早，那 **then** 里面注册的回调就没机会运行了，所以要给他们加个 `queueMicrotask`
+- 如果用户给构造函数传的是一个同步函数，里面的 **resolve** 和 **reject** 会立即执行，比 **then** 还执行的早，那 **then** 里面注册的回调就没机会运行了，所以要给他们加个 `queueMicrotask`
 
 
 ### then
@@ -166,8 +170,21 @@ then(onFulfilled, onRejected) {
 - **catch** 和 **finally** 本质上还是 **then**。**catch** 是一个只有处理错误回调的 **api**，所以我们直接 `return this.then(null, errorCb)`。**finally** 是无论 **promise** 成功还是失败总会执行的回调，一般在最后使用，关闭一些流事件，直接 `return this.then(fn, fn)`
 
 ### 使用 promises-aplus-tests 测试手写promise过程
+```javascript
+JetPromise.defer = JetPromise.deferred = function () {
+	let dfd = {}
+	dfd.promise = new JetPromise((resolve, reject) => {
+		dfd.resolve = resolve
+		dfd.reject = reject
+	})
+	return dfd
+}
 
+module.exports = JetPromise
+```
 
+**872个测试用例全部通过**
+![在这里插入图片描述](https://wx1.sinaimg.cn/mw2000/0074cNT9ly1h0z2os99pyj308c01rjrd.jpg)
 
 ### 其他Promise's Api
 #### Promise.resolve
