@@ -1,0 +1,17 @@
+/**
+ * @param {number[]} height
+ * @return {number}
+ */
+var maxArea = function (height) {
+  if (height.length < 2) return 0;
+  let ans = 0,
+    left = 0,
+    right = height.length - 1;
+  while (right > left) {
+    const minH = height[left] < height[right] ? height[left] : height[right];
+    const x = right - left;
+    minH * x > ans && (ans = minH * x);
+    height[left] < height[right] ? left++ : right--;
+  }
+  return ans;
+};

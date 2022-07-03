@@ -1,0 +1,22 @@
+/**
+ * @param {number[]} nums
+ * @return {number}
+ */
+var lengthOfLIS = function (nums) {
+  const len = nums.length;
+  if (len < 2) return len;
+  const dp = Array(len).fill(1);
+  let ans = 1;
+  for (let i = 1; i < len; i++) {
+    let maxNum = Number.MIN_SAFE_INTEGER,
+      maxDp = 1;
+    for (let j = i - 1; j >= 0; j--) {
+      if (nums[j] > maxNum && dp[j] >= maxDp && nums[j] < nums[i]) {
+        (maxNum = nums[j]), (maxDp = dp[j] + 1);
+      }
+    }
+    dp[i] = maxDp;
+    if (dp[i] > ans) ans = dp[i];
+  }
+  return ans;
+};
